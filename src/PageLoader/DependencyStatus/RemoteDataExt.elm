@@ -1,6 +1,7 @@
 module PageLoader.DependencyStatus.RemoteDataExt exposing (asStatus)
 
 import PageLoader.DependencyStatus as DependencyStatus
+import PageLoader.Progression as Progression
 import RemoteData
 
 
@@ -11,4 +12,4 @@ asStatus remoteData =
     else if RemoteData.isSuccess remoteData then
         DependencyStatus.Success
     else
-        DependencyStatus.Pending DependencyStatus.singlePendingProgression
+        DependencyStatus.Pending Progression.singlePending

@@ -9,6 +9,7 @@ module PageLoader
         )
 
 import PageLoader.DependencyStatus as DependencyStatus
+import PageLoader.Progression as Progression
 
 
 type PageState page loader
@@ -27,7 +28,7 @@ visualPage pageState =
 
 
 type TransitionStatus model msg data
-    = Pending ( model, Cmd msg ) DependencyStatus.Progression
+    = Pending ( model, Cmd msg ) Progression.Progression
     | Success data
     | Failed String
 

@@ -1,19 +1,19 @@
 module PageLoader.DependencyStatus
     exposing
-        ( Progression
-        , singlePendingProgression
-        , Status(..)
+        ( Status(..)
         , isSuccess
         , isFailed
         , isPending
         , combine
         )
 
+import PageLoader.Progression as Progression
+
 
 type Status
     = Success
     | Failed
-    | Pending Progression
+    | Pending Progression.Progression
 
 
 isFailed : Status -> Bool
@@ -46,40 +46,17 @@ combine statuses =
         Pending (sumProgressions statuses)
 
 
-type alias Progression =
-    { total : Int
-    , finished : Int
-    }
-
-
-singlePendingProgression : Progression
-singlePendingProgression =
-    Progression 1 0
-
-
-emptyProgression : Progression
-emptyProgression =
-    Progression 0 0
-
-
-sumProgressions : List Status -> Progression
+sumProgressions : List Status -> Progression.Progression
 sumProgressions statuses =
-    List.filterMap asMaybeProgression statuses
-        |> List.foldl combineProgression emptyProgression
+    List.filterMap mapAsProgression statuses
+        |> List.foldl Progression.combine Progression.empty
 
 
-asMaybeProgression : Status -> Maybe Progression
-asMaybeProgression status =
+mapAsProgression : Status -> Maybe Progression.Progression
+mapAsProgression status =
     case status of
         Pending progression ->
             Just progression
 
         _ ->
             Nothing
-
-
-combineProgression : Progression -> Progression -> Progression
-combineProgression a b =
-    { total = a.total + b.total
-    , finished = a.finished + b.finished
-    }
