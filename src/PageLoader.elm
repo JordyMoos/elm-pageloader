@@ -41,7 +41,7 @@ defaultDependencyStatusListHandler :
 defaultDependencyStatusListHandler ( model, cmd ) dependencyStatuses onSuccessCallback =
     defaultDependencyStatusHandler
         ( model, cmd )
-        (DependencyStatus.combine dependencyStatuses)
+        (DependencyStatus.reduce dependencyStatuses)
         onSuccessCallback
 
 
