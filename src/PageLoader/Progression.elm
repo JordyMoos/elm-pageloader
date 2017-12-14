@@ -8,7 +8,7 @@ You probably should not create a Progression on your own, but should try to use 
 If you are using something else than what is already supported, then off course you must do it on your own.
 
 
-# PageLoader.Progression
+# Progression
 
 @docs Progression
 @docs singlePending, empty

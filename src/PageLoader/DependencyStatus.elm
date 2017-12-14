@@ -15,7 +15,7 @@ For all of those we need to know if they are succeeded or not. Therefor a smalle
 Any dependency should be able to convert to a `Status` which is used by the `PageLoader`.
 
 
-# PageLoader.DependencyStatus
+# DependencyStatus
 
 @docs Status
 @docs isFailed, isSuccess, isPending

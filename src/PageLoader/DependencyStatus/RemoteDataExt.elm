@@ -6,7 +6,7 @@ This is only useful when you use the `RemoteData` library, but this will add `Re
 Therefor this should be moved to an additional optional dependency.
 
 
-# PageLoader.DependencyStatus.RemoteDataExt
+# RemoteDataExt
 
 @docs asStatus
 
