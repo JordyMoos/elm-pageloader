@@ -1,6 +1,6 @@
 module PageLoader.DependencyStatus.RemoteDataExt exposing (asStatus)
 
-import PageLoader.DependencyStatus.DependencyStatus as DependencyStatus
+import PageLoader.DependencyStatus as DependencyStatus
 import RemoteData
 
 

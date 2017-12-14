@@ -1,4 +1,4 @@
-module PageLoader.DependencyStatus.DependencyStatus
+module PageLoader.DependencyStatus
     exposing
         ( Progression
         , singlePendingProgression

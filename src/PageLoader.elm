@@ -8,7 +8,7 @@ module PageLoader
         , defaultTransitionStatusHandler
         )
 
-import PageLoader.DependencyStatus.DependencyStatus as DependencyStatus
+import PageLoader.DependencyStatus as DependencyStatus
 
 
 type PageState page loader
