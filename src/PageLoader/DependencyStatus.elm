@@ -49,7 +49,7 @@ combine statuses =
 sumProgressions : List Status -> Progression.Progression
 sumProgressions statuses =
     List.filterMap mapAsProgression statuses
-        |> List.foldl Progression.combine Progression.empty
+        |> List.foldl Progression.add Progression.empty
 
 
 mapAsProgression : Status -> Maybe Progression.Progression
