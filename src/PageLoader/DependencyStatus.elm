@@ -4,6 +4,7 @@ module PageLoader.DependencyStatus
         , isSuccess
         , isFailed
         , isPending
+        , addFinished
         , reduce
         )
 
@@ -19,7 +20,7 @@ Any dependency should be able to convert to a `Status` which is used by the `Pag
 
 @docs Status
 @docs isFailed, isSuccess, isPending
-@docs reduce
+@docs reduce, addFinished
 
 -}
 
@@ -65,6 +66,28 @@ isPending status =
 
         _ ->
             False
+
+
+{-| addFinished adds 1 to the finished property of the progression.
+
+This is useful when you have a dependency with a `Progression.total` higher then 1.
+Then whenever something for it is resolved, you can call `addFinished`.
+And when `total` is the same as `finished` then the status will me converted to a `Success` status.
+
+If the given status was already success of failed then the return value will be the same as the given value.
+
+-}
+addFinished : Status -> Status
+addFinished status =
+    case status of
+        Pending progression ->
+            if progression.total == progression.finished + 1 then
+                Success
+            else
+                Pending (Progression.add progression { total = 0, finished = 1 })
+
+        _ ->
+            status
 
 
 {-| Reduces a `List Status` to a single `Status`.

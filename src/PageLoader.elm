@@ -3,9 +3,9 @@ module PageLoader
         ( PageState(..)
         , TransitionStatus(..)
         , visualPage
-        , defaultTransitionStatusHandler
         , defaultDependencyStatusHandler
         , defaultDependencyStatusListHandler
+        , defaultProcessLoading
         )
 
 {-| `PageLoader` is a utility library to make loading of pages with dependencies clearer.
@@ -14,8 +14,9 @@ module PageLoader
 # PageLoader
 
 @docs PageState, visualPage
-@docs TransitionStatus, defaultTransitionStatusHandler
+@docs TransitionStatus
 @docs defaultDependencyStatusHandler, defaultDependencyStatusListHandler
+@docs defaultProcessLoading
 
 -}
 
@@ -97,21 +98,27 @@ defaultDependencyStatusHandler ( model, cmd ) dependencyStatus onSuccessCallback
 
 {-| Todo
 -}
-defaultTransitionStatusHandler :
-    TransitionStatus loadingModel loadingMsg newData
-    -> page
-    -> (loadingModel -> loader)
-    -> (loadingMsg -> msg)
-    -> (newData -> page)
-    -> (String -> page)
+defaultProcessLoading :
+    (String -> page) -- ErrorPageK
+    -> (loadingModel -> Progression.Progression -> loader) -- LoadingHome
+    -> (loadingMsg -> msg) -- LoadingHomeMsg
+    -> (newModel -> page) -- HomePage
+    -> (newData -> ( newModel, Cmd newMsg )) -- Home.init
+    -> (newMsg -> msg) -- HomeMsg / NoOp
+    -> page -- oldPage
+    -> TransitionStatus loadingModel loadingMsg newData -- TransitionStatus
     -> ( PageState page loader, Cmd msg )
-defaultTransitionStatusHandler transitionStatus oldPage loader loadingMsgTagger newPage errorPage =
+defaultProcessLoading errorPage loader loaderMsg successPage successPageInit successPageMsg oldPage transitionStatus =
     case transitionStatus of
         Pending ( model, cmd ) progression ->
-            ( Transitioning oldPage (loader model), Cmd.map loadingMsgTagger cmd )
+            ( Transitioning oldPage (loader model progression), Cmd.map loaderMsg cmd )
 
         Success newData ->
-            ( Loaded (newPage newData), Cmd.none )
+            let
+                ( model, cmd ) =
+                    successPageInit newData
+            in
+                ( Loaded (successPage model), Cmd.map successPageMsg cmd )
 
         Failed error ->
             ( Loaded (errorPage error), Cmd.none )
