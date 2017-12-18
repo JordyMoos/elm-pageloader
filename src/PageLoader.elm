@@ -40,7 +40,7 @@ type PageState page loader
     | Transitioning page loader
 
 
-{-| `visualPage` gathers the `page` from a `PageState`.
+{-| `visualPage` extracts the `page` from a `PageState`.
 -}
 visualPage : PageState page loader -> page
 visualPage pageState =
@@ -63,7 +63,16 @@ type TransitionStatus model msg data
     | Failed String
 
 
-{-| Todo
+{-| `defaultDependencyStatusListHandler` is used by the loader to create a new `TransitionStatus` based on the data of the loader.
+
+Given are:
+
+  - A tuple of (Model, Cmd Msg) which is the model and cmd of the loader.
+  - A list of `DependencyStatus.Status`
+  - A closure that will be called to create the new data (often the Model of the page when loaded)
+
+The function will return a new `TransitionStatus`.
+
 -}
 defaultDependencyStatusListHandler :
     ( model, Cmd msg )
@@ -77,7 +86,10 @@ defaultDependencyStatusListHandler ( model, cmd ) dependencyStatuses onSuccessCa
         onSuccessCallback
 
 
-{-| Todo
+{-| `defaultDependencyStatusHandler` almost the same as `defaultDependencyStatusListHandler` with the only difference that this function received a single `DependencyStatus.Status` instead of a list.
+
+@see defaultDependencyStatusListHandler
+
 -}
 defaultDependencyStatusHandler :
     ( model, Cmd msg )
@@ -96,22 +108,41 @@ defaultDependencyStatusHandler ( model, cmd ) dependencyStatus onSuccessCallback
             Success (onSuccessCallback ())
 
 
-{-| Todo
+{-| `defaultProcessLoading`
+
+The `defaultProcessLoading` takes the `TransitionStatus` and will convert that to a new `PageState`.
+In order to do that it need a couple of configurations about the loader, the page you want to go to and the error page.
+
+Given are:
+
+  - errorPage. A page that requires a String which is the error description. And that will be set as the Loaded PageState is the TransitionStatus is Failed
+  - loaderPage. The loader page required a loaders.Model and a Progression.Progression. Will be used when the TransitionStatus is still is Pending.
+  - loaderMsg. The msg tagger for the loaderPage.
+  - successPage. The page that used if the TransitionStatus is Success.
+  - successPageInit. The init function of the successPage. The init function will be called with the result data of the loader. That is often the model of the successPage but that is not required.
+  - successPageMsg. The msg tagger for the successPage.
+  - oldPage. A page that is visual in the mean time.
+  - TransitionStatus. The transition status returned by the loader or the page.
+
+The function will return a new PageState based on all this information.
+
+Please see <https://github.com/JordyMoos/elm-pageloader-demo-site/blob/master/src/Main.elm> for an example usage.
+
 -}
 defaultProcessLoading :
-    (String -> page) -- ErrorPageK
-    -> (loadingModel -> Progression.Progression -> loader) -- LoadingHome
-    -> (loadingMsg -> msg) -- LoadingHomeMsg
-    -> (newModel -> page) -- HomePage
-    -> (newData -> ( newModel, Cmd newMsg )) -- Home.init
-    -> (newMsg -> msg) -- HomeMsg / NoOp
-    -> page -- oldPage
-    -> TransitionStatus loadingModel loadingMsg newData -- TransitionStatus
+    (String -> page)
+    -> (loadingModel -> Progression.Progression -> loader)
+    -> (loadingMsg -> msg)
+    -> (newModel -> page)
+    -> (newData -> ( newModel, Cmd newMsg ))
+    -> (newMsg -> msg)
+    -> page
+    -> TransitionStatus loadingModel loadingMsg newData
     -> ( PageState page loader, Cmd msg )
-defaultProcessLoading errorPage loader loaderMsg successPage successPageInit successPageMsg oldPage transitionStatus =
+defaultProcessLoading errorPage loaderPage loaderMsg successPage successPageInit successPageMsg oldPage transitionStatus =
     case transitionStatus of
         Pending ( model, cmd ) progression ->
-            ( Transitioning oldPage (loader model progression), Cmd.map loaderMsg cmd )
+            ( Transitioning oldPage (loaderPage model progression), Cmd.map loaderMsg cmd )
 
         Success newData ->
             let
