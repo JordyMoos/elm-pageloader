@@ -15,8 +15,10 @@ That works pretty easy but it gets a bit harder when you have multiple dependenc
 
 Handling based on the status of the dependencies is where this library comes in. Hopefully it helps you setup a clean way of managing your dependencies and transitions between pages.
 
-A demo site implementing this library can be found in the demo site repository:
-https://github.com/JordyMoos/elm-pageloader-demo-site
+A demo site implementing this library can be found in the [demo site repository](https://github.com/JordyMoos/elm-pageloader-demo-site).
 
-A description about the types and functions can be found on package.elm-lang.org:
-http://package.elm-lang.org/packages/JordyMoos/elm-pageloader/latest
+A description about the types and functions can be found on [package.elm-lang.org](http://package.elm-lang.org/packages/JordyMoos/elm-pageloader/latest).
+
+## Basic concepts
+
+Coming soon. [Please see the demo's source code for now.](https://github.com/JordyMoos/elm-pageloader-demo-site).
